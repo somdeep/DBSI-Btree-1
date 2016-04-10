@@ -36,7 +36,20 @@ int main(int argc, char* argv[])
 
 	printf("Passed k:%d p:%d levels:%d\n",k,p,levels);
 
+	int *levelArray[levels];
+	int arraySize[levels];
+	int prev=1;
+
 	//now building array of arrays
+	for(i=0;i<levels;i++)
+	{
+		arraySize[i]=prev*(fanout[i]-1);
+		
+		prev=arraySize[i]+arraySize[i]/(fanout[i]-1);
+		
+		printf("%d\n",arraySize[i]);
+	}
+
 
 	return(0);
        
