@@ -19,6 +19,8 @@ int main(int argc, char* argv[])
 	uint32_t i=0;
 	uint32_t j=0;
 	uint32_t fanout[levels];
+	uint32_t lookfor = 10;
+	uint32_t foundindex;
 
 	while(i<levels)
 	{
@@ -44,6 +46,7 @@ int main(int argc, char* argv[])
 	uint32_t treesize=0;
 	uint32_t current[levels];//points to most recently filled entry in each level
 	uint32_t nodesize[levels];
+	uint32_t nodecount[levels];//store number of nodes at each level
 	//at any point of time, only one node is being filled on each level, this stores the extent to which that node is filled
 	void* memorypt;
 
@@ -57,6 +60,7 @@ int main(int argc, char* argv[])
 		levelArray[i]=(uint32_t *)memorypt;
 		current[i]=0;
 		nodesize[i]=0;
+		nodecount[i]=
 		prev=arraySize[i]+arraySize[i]/(fanout[i]-1);
 		printf("Level %d maximum size : %d\n",i,arraySize[i]);
 	}
