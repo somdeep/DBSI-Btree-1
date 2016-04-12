@@ -17,13 +17,13 @@ int main(int argc, char* argv[])
 		exit(0);
 	}
 
-	int32_t keys=atoi(argv[1]);
-	int32_t probes=atoi(argv[2]);
+	int32_t keys=atoi(argv[1]);//storing number of keys obtained as argument
+	int32_t probes=atoi(argv[2]);//storing number of probes also obtained as arguments
 	
 	int32_t levels=argc-3;
 	int32_t i=0;
 	int32_t j=0;
-	int32_t fanout[levels];
+	int32_t fanout[levels];//array stores fanout for each level
 	int32_t lookfor = 10;
 	int32_t foundindex;
 
@@ -52,9 +52,9 @@ int main(int argc, char* argv[])
 	int32_t prev=1;
 	int32_t treesize=0;
 	int32_t current[levels];//points to most recently filled entry in each level
-	int32_t nodesize[levels];
-	int32_t nodecount[levels];//store number of nodes at each level
+	int32_t nodesize[levels];//store extent of node currently filled at level under consideration
 	//at any point of time, only one node is being filled on each level, this stores the extent to which that node is filled
+	int32_t nodecount[levels];//store number of nodes at each level
 	void* memorypt;
 
 	//now building array of arrays
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 			if(i>0)
 			{
 				start=traversed*fanout[i-1]*(fanout[i]-1) + (fanout[i]-1)*part;
-				end=start + fanout[i]-1;
+				end=start + fanout[i]-2;
 				traversed=start/(fanout[i]-1);
 			}
 			part=1+binary(levelArray[i],start,end,target)-start;
@@ -200,6 +200,8 @@ int main(int argc, char* argv[])
 
 
 	}
+
+	//free used memory
 	free(gen);
 
 
