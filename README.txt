@@ -22,4 +22,7 @@ Implementation Aspects
 	---> A binary search module is implemented that takes in a pointer to int32_t integer, the array to search in is sent here.
 	--->  start and end store the range to search for in binarysearch
 	---> traversed is an indicator of the indices that should be bypassed at that particular level to access the current relevant index in a level array.
-	---> 
+	---> Count array stores the range calculated for each probe value. this is done in the following manner:
+		Now at any node, to find its range, we need the number of pages already crossed(everything lesser than it in the left tree) and this 
+		is added to the part(index within searched node).
+	---> Finally the count(range identifier) for each node is displayed from the array of results.

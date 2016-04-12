@@ -157,8 +157,9 @@ int main(int argc, char* argv[])
 	gen = rand32_init(time(NULL));
 	n=probes;
 	int32_t *b= generate(n,gen);
+	int32_t *bholder=b;
 
-	//PROBE LOOP
+	//PROBE LOOP - start of the probes being carried out
 
 	int32_t result[levels];
 	int32_t resultcount=0;
@@ -168,7 +169,7 @@ int main(int argc, char* argv[])
 	//int32_t target=;
 	int32_t start=0;
 	int32_t end=arraySize[i]-1;
-
+	int32_t count[probes];
 	printf("\nRanges : \n");
 
 
@@ -178,7 +179,8 @@ int main(int argc, char* argv[])
 		start=0;
 		end=0;
 		traversed=0;
-		printf("New target : %d\n", target);
+		count[j]=0;
+		//printf("New target : %d\n", target);
 		for(i=0;i<levels;i++)
 		{	
 			if(i>0)
@@ -188,21 +190,34 @@ int main(int argc, char* argv[])
 				traversed=start/(fanout[i]-1);
 			}
 			part=1+binary(levelArray[i],start,end,target)-start;
+			count[j]+=part+start;
 			//printf("%d %d \n", );
 			result[resultcount++]=part;
 			// printf("Level %d ------>  %d\n",i,part);
 		}
 		target=*(++b);
-		for (int xyz = 0; xyz < resultcount; xyz++)
-		{
-			printf("Level %d ------>  %d\n",xyz,result[xyz]);//printing result array
-		}
+		// for (int xyz = 0; xyz < resultcount; xyz++)
+		// {
+		// 	printf("Level %d ------>  %d\n",xyz,result[xyz]);//printing result array
+		// }
 
 
 	}
 
+	b=bholder;
+	for (i = 0; i < probes; ++i)
+	{
+		printf("Probe %d  : Value - %d : Range Identifier : %d\n",i,*b,count[i] );
+		b++;
+	}
+
 	//free used memory
 	free(gen);
+
+	for (i = 0; i < levels; ++i)
+	{
+		free(levelArray[i]);
+	}
 
 
 	return(0);
@@ -212,23 +227,15 @@ int main(int argc, char* argv[])
 
 
 int32_t binary(int32_t * arr,int32_t start,int32_t end,int32_t target)
-{
+{//module for binary search, always returns lower range which is in end
     if(start>end)
         return end;
 
-
     int32_t mid=(start+end)/2;
-
-
-    // if(arr[mid] == target)
-    //     return mid;
-
 
     if(target<=arr[mid])
         return binary(arr,start,mid-1,target);
     else
-        return binary(arr,mid+1,end,target);
-        
-    
+        return binary(arr,mid+1,end,target);    
         
 }
