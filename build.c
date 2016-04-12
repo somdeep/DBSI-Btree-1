@@ -5,6 +5,10 @@
 #include "random.c"
 
 
+
+int binary(int32_t * arr,int start,int end,int32_t target);
+
+
 int main(int argc, char* argv[])
 {
 	if(argc<4)
@@ -79,7 +83,7 @@ int main(int argc, char* argv[])
 	rand32_t *gen = rand32_init(time(NULL));
 	size_t n = keys;
 	int32_t *a = generate_sorted_unique(n, gen);
-
+	
 
 
 	int32_t* value;
@@ -121,7 +125,8 @@ int main(int argc, char* argv[])
 		value=levelArray[l];
 		value=value+(current[l]);
 
-		*value=*a;
+		// *value=*a;
+		*value=i;
 		a++;
 		printf("%d  %d\n",value,*value);
 		current[l]++;
@@ -147,8 +152,69 @@ int main(int argc, char* argv[])
 		exit(0);
 	}
 
+
+	free(gen);
+	gen = rand32_init(time(NULL));
+	n=probes;
+	int32_t *b= generate(n,gen);
+
+	//PROBE LOOP
+
+	// for(i=0;i<n;i++)
+	// {
+
+
+	// }
+
+
+	i=0;
+	int32_t part=0,traversed=0;
+	//int32_t target=*b;
+	int32_t target=-10;
+	int32_t start=0;
+	int32_t end=arraySize[i]-1;
+
+	printf("\nRanges : \n");
+	for(i=0;i<levels;i++)
+	{	
+		if(i>0)
+		{
+			start=traversed*fanout[i-1]*(fanout[i]-1) + (fanout[i]-1)*part;
+			end=start + fanout[i]-1;
+			traversed=start/(fanout[i]-1);
+		}
+		part=1+binary(levelArray[i],start,end,target)-start;
+		//printf("%d %d \n", );
+		
+		printf("Level %d ------>  %d\n",i,part);
+	}
+
 	free(gen);
 
 	return(0);
        
+}
+
+
+
+int32_t binary(int32_t * arr,int32_t start,int32_t end,int32_t target)
+{
+    if(start>end)
+        return end;
+
+
+    int32_t mid=(start+end)/2;
+
+
+    // if(arr[mid] == target)
+    //     return mid;
+
+
+    if(target<=arr[mid])
+        return binary(arr,start,mid-1,target);
+    else
+        return binary(arr,mid+1,end,target);
+        
+    
+        
 }

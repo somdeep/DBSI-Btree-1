@@ -1,13 +1,16 @@
 #include <stdio.h>
+#include <stdint.h>
 
 int binary(int arr[],int start,int end,int target);
 int main()
+
 {
     
     printf("\nHello World");
-    int arr[]={1,2,5,6};
+    int32_t arr[]={1,2,5,6};
+    int32_t *a=&arr[0];
     printf("%d\n",sizeof(arr)/sizeof(int) );
-    int result=binary(arr,0,sizeof(arr)/sizeof(int)-1,5)+1;
+    int32_t result=binary(a,0,sizeof(arr)/sizeof(int)-1,5)+1;
     printf("\nResult : %d",result);
     return 0;
 
@@ -15,13 +18,13 @@ int main()
 
 
 
-int binary(int arr[],int start,int end,int target)
+int32_t binary(int32_t * arr,int32_t start,int32_t end,int32_t target)
 {
     if(start>end)
         return end;
 
 
-    int mid=(start+end)/2;
+    int32_t mid=(start+end)/2;
 
 
     if(arr[mid] == target)
