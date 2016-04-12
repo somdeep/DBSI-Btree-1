@@ -125,10 +125,10 @@ int main(int argc, char* argv[])
 		value=levelArray[l];
 		value=value+(current[l]);
 
-		// *value=*a;
-		*value=i;
+		*value=*a;
+		//*value=i;
 		a++;
-		printf("%d  %d\n",value,*value);
+		// printf("%d  %d\n",value,*value);
 		current[l]++;
 		nodesize[l]++;		
 	}
@@ -160,36 +160,48 @@ int main(int argc, char* argv[])
 
 	//PROBE LOOP
 
-	// for(i=0;i<n;i++)
-	// {
-
-
-	// }
-
-
+	int32_t result[levels];
+	int32_t resultcount=0;
 	i=0;
 	int32_t part=0,traversed=0;
-	//int32_t target=*b;
-	int32_t target=-10;
+	int32_t target=*b;
+	//int32_t target=;
 	int32_t start=0;
 	int32_t end=arraySize[i]-1;
 
 	printf("\nRanges : \n");
-	for(i=0;i<levels;i++)
-	{	
-		if(i>0)
-		{
-			start=traversed*fanout[i-1]*(fanout[i]-1) + (fanout[i]-1)*part;
-			end=start + fanout[i]-1;
-			traversed=start/(fanout[i]-1);
-		}
-		part=1+binary(levelArray[i],start,end,target)-start;
-		//printf("%d %d \n", );
-		
-		printf("Level %d ------>  %d\n",i,part);
-	}
 
+
+	for(j=0;j<n;j++)
+	{
+		resultcount=0;
+		start=0;
+		end=0;
+		traversed=0;
+		printf("New target : %d\n", target);
+		for(i=0;i<levels;i++)
+		{	
+			if(i>0)
+			{
+				start=traversed*fanout[i-1]*(fanout[i]-1) + (fanout[i]-1)*part;
+				end=start + fanout[i]-1;
+				traversed=start/(fanout[i]-1);
+			}
+			part=1+binary(levelArray[i],start,end,target)-start;
+			//printf("%d %d \n", );
+			result[resultcount++]=part;
+			// printf("Level %d ------>  %d\n",i,part);
+		}
+		target=*(++b);
+		for (int xyz = 0; xyz < resultcount; xyz++)
+		{
+			printf("Level %d ------>  %d\n",xyz,result[xyz]);//printing result array
+		}
+
+
+	}
 	free(gen);
+
 
 	return(0);
        
