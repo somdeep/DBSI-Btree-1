@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdint.h>
+#include "random.c"
 
 
 int main(int argc, char* argv[])
@@ -12,16 +13,18 @@ int main(int argc, char* argv[])
 		exit(0);
 	}
 
-	uint32_t keys=atoi(argv[1]);
-	uint32_t probes=atoi(argv[2]);
+	int32_t keys=atoi(argv[1]);
+	int32_t probes=atoi(argv[2]);
 	
-	uint32_t levels=argc-3;
-	uint32_t i=0;
-	uint32_t j=0;
-	uint32_t fanout[levels];
-	uint32_t lookfor = 10;
-	uint32_t foundindex;
+	int32_t levels=argc-3;
+	int32_t i=0;
+	int32_t j=0;
+	int32_t fanout[levels];
+	int32_t lookfor = 10;
+	int32_t foundindex;
 
+
+	
 	while(i<levels)
 	{
 		fanout[i]=atoi(argv[i+3]);	
@@ -36,17 +39,17 @@ int main(int argc, char* argv[])
 	}
 
 
-	uint32_t numkey=levels-1;
+	int32_t numkey=levels-1;
 
 	printf("Passed k:%d p:%d levels:%d\n",keys,probes,levels);
 
-	uint32_t *levelArray[levels];
-	uint32_t arraySize[levels];
-	uint32_t prev=1;
-	uint32_t treesize=0;
-	uint32_t current[levels];//points to most recently filled entry in each level
-	uint32_t nodesize[levels];
-	uint32_t nodecount[levels];//store number of nodes at each level
+	int32_t *levelArray[levels];
+	int32_t arraySize[levels];
+	int32_t prev=1;
+	int32_t treesize=0;
+	int32_t current[levels];//points to most recently filled entry in each level
+	int32_t nodesize[levels];
+	int32_t nodecount[levels];//store number of nodes at each level
 	//at any point of time, only one node is being filled on each level, this stores the extent to which that node is filled
 	void* memorypt;
 
@@ -56,8 +59,8 @@ int main(int argc, char* argv[])
 		arraySize[i]=prev*(fanout[i]-1);
 		treesize+=arraySize[i];
 		//allocate size
-		posix_memalign(&memorypt,16,sizeof(uint32_t)*arraySize[i]);
-		levelArray[i]=(uint32_t *)memorypt;
+		posix_memalign(&memorypt,16,sizeof(int32_t)*arraySize[i]);
+		levelArray[i]=(int32_t *)memorypt;
 		current[i]=0;
 		nodesize[i]=0;
 		nodecount[i]=
@@ -72,14 +75,21 @@ int main(int argc, char* argv[])
 	}
 
 
-	uint32_t* value;
+	//calling in functions from program for obtaining random numbers
+	rand32_t *gen = rand32_init(time(NULL));
+	size_t n = keys;
+	int32_t *a = generate_sorted_unique(n, gen);
+
+
+
+	int32_t* value;
 	//check for insert
 	for (i = 0; i <levels ; i++)
 	{
 		value=levelArray[i];
 		for (j = 0; j < arraySize[i]; j++)
 		{
-			*value=UINT32_MAX;
+			*value=INT32_MAX;
 			value++;
 		}
 	}
@@ -111,8 +121,9 @@ int main(int argc, char* argv[])
 		value=levelArray[l];
 		value=value+(current[l]);
 
-		*value=i;
-		// printf("%d  %d\n",value,*value);
+		*value=*a;
+		a++;
+		printf("%d  %d\n",value,*value);
 		current[l]++;
 		nodesize[l]++;		
 	}
@@ -124,17 +135,19 @@ int main(int argc, char* argv[])
 		printf("Level %d -----> ",i);
 		for (j = 0; j < arraySize[i]; ++j)
 		{
-			printf(" %u ", *value);
+			printf(" %d ", *value);
 			value++;
 		}
 		printf("\n\n");
 	}
 
-	if(*levelArray[0] == UINT32_MAX)
+	if(*levelArray[0] == INT32_MAX)
 	{
 		printf("Too few keys, empty root\n");
 		exit(0);
 	}
+
+	free(gen);
 
 	return(0);
        
